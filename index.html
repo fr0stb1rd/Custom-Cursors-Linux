@@ -68,6 +68,7 @@
                         'slide-up': 'slideUp 0.5s ease-out forwards',
                         'neru-flash': 'neruFlash 0.5s ease-in-out',
                         'float': 'float 6s ease-in-out infinite',
+                        'blob': 'blob 7s infinite',
                     },
                     keyframes: {
                         fadeIn: {
@@ -78,7 +79,6 @@
                             '0%': { opacity: '0', transform: 'translateY(20px)' },
                             '100%': { opacity: '1', transform: 'translateY(0)' },
                         },
-                        /* Neru Flash: Validates the theme toggle transition */
                         neruFlash: {
                             '0%, 100%': { borderColor: 'transparent' },
                             '50%': { borderColor: '#F2C911', boxShadow: '0 0 20px #F2C91144' },
@@ -86,6 +86,12 @@
                         float: {
                             '0%, 100%': { transform: 'translateY(0)' },
                             '50%': { transform: 'translateY(-10px)' },
+                        },
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
                         }
                     }
                 }
@@ -128,6 +134,7 @@
         const Moon = (p) => <Icon {...p}><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></Icon>;
         const Smartphone = (p) => <Icon {...p}><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></Icon>;
         const Globe = (p) => <Icon {...p}><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></Icon>;
+        const ChevronDown = (p) => <Icon {...p}><polyline points="6 9 12 15 18 9"></polyline></Icon>;
 
         // --- MAIN APP COMPONENT ---
         const App = () => {
@@ -216,6 +223,7 @@
             // --- SCRIPT STATE ---
             // We keep the script in state so it can be edited manually.
             const [scriptContent, setScriptContent] = useState('');
+            const [isPackDropdownOpen, setIsPackDropdownOpen] = useState(false);
 
             // Helper: Copies text to clipboard using a temporary textarea
             // Fallback method used to ensure compatibility
@@ -333,10 +341,17 @@ ln -sf ${mappings.pin} location-arrow`;
 
             return (
                 <div className={`${isDark ? 'dark' : ''} transition-all duration-700 ${activeCursor ? 'cursor-none' : ''}`}>
-                    <div className="min-h-screen bg-teto-50 dark:bg-[#020617] transition-colors duration-700 selection:bg-teto-500/30 dark:selection:bg-miku-500/30">
+                    <div className="min-h-screen bg-teto-50 dark:bg-[#020617] transition-colors duration-700 selection:bg-teto-500/30 dark:selection:bg-miku-500/30 relative overflow-hidden">
+                        {/* DECORATIVE BACKGROUND BLOBS */}
+                        <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+                            <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-teto-500/15 dark:bg-miku-500/15 blur-[140px] animate-blob"></div>
+                            <div className="absolute bottom-[-10%] right-[10%] w-[45%] h-[45%] rounded-full bg-teto-500/15 dark:bg-miku-500/15 blur-[140px] animate-blob [animation-delay:2s]"></div>
+                            <div className="absolute top-[30%] left-[60%] w-[40%] h-[40%] rounded-full bg-neru-500/15 blur-[120px] animate-blob [animation-delay:4s]"></div>
+                        </div>
 
-                        {/* GLOBAL NERU TRANSITION OVERLAY */}
-                        <div className={`fixed inset-0 bg-neru pointer-events-none z-[100] transition-opacity duration-300 ${isTransitioning ? 'opacity-20' : 'opacity-0'}`}></div>
+                        <div className="relative z-10">
+                            {/* GLOBAL NERU TRANSITION OVERLAY */}
+                            <div className={`fixed inset-0 bg-neru pointer-events-none z-[100] transition-opacity duration-300 ${isTransitioning ? 'opacity-20' : 'opacity-0'}`}></div>
 
                         {/* CUSTOM FLOATING CURSOR */}
                         {activeCursor && (
@@ -351,6 +366,16 @@ ln -sf ${mappings.pin} location-arrow`;
                                 <img src={activeCursor} alt="Custom Cursor" className="w-8 h-8" style={{ imageRendering: 'pixelated' }} />
                             </div>
                         )}
+
+                        {/* FLOATING SUCCESS BADGE */}
+                        <div className={`fixed bottom-12 left-1/2 -translate-x-1/2 z-[1000] transition-all duration-500 transform ${copied ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-90 pointer-events-none'}`}>
+                            <div className="bg-white dark:bg-slate-900 border-2 border-green-500 text-green-500 px-6 py-3 rounded-2xl font-black text-[10px] tracking-widest shadow-[0_20px_50px_rgba(16,185,129,0.3)] flex items-center gap-3 uppercase">
+                                <div className="w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center">
+                                    <Check size={14} strokeWidth={3} />
+                                </div>
+                                Copied to Clipboard
+                            </div>
+                        </div>
 
                         {/* HEADER */}
                         <header className="border-b border-teto-200 dark:border-miku-500/20 bg-white/70 dark:bg-slate-900/70 glass-panel sticky top-0 z-50 transition-colors duration-500">
@@ -418,7 +443,7 @@ ln -sf ${mappings.pin} location-arrow`;
 
                                     <a href="#" className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-bold text-black dark:text-white dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
                                         <span className="w-2 h-2 rounded-full bg-neru animate-pulse"></span>
-                                        v1.0.2
+                                        v2.1.0
                                     </a>
                                 </div>
                             </div>
@@ -495,7 +520,20 @@ ln -sf ${mappings.pin} location-arrow`;
                                         <div>
                                             <div className="flex justify-between items-end mb-3">
                                                 <label className="block text-[11px] font-bold text-black dark:text-white uppercase tracking-wide">Cursor Size</label>
-                                                <span className="text-xs font-mono font-bold text-teto dark:text-miku bg-teto-50 dark:bg-miku-900/30 px-2 py-0.5 rounded">{cursorSize}px</span>
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-10 h-10 flex items-center justify-center bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden relative group/preview">
+                                                        <div className="absolute inset-0 bg-gradient-to-br from-teto/5 to-transparent dark:from-miku/5 opacity-0 group-hover/preview:opacity-100 transition-opacity"></div>
+                                                        <MousePointer 
+                                                            size={Math.max(12, cursorSize / 2)} 
+                                                            className="text-teto dark:text-miku transition-all duration-300" 
+                                                            style={{ 
+                                                                width: `${Math.max(12, cursorSize/2.5)}px`, 
+                                                                height: `${Math.max(12, cursorSize/2.5)}px` 
+                                                            }} 
+                                                        />
+                                                    </div>
+                                                    <span className="text-xs font-mono font-bold text-teto dark:text-miku bg-teto-50 dark:bg-miku-900/30 px-2 py-0.5 rounded shadow-sm">{cursorSize}px</span>
+                                                </div>
                                             </div>
                                             <input
                                                 type="range"
@@ -632,7 +670,7 @@ ln -sf ${mappings.pin} location-arrow`;
                                                         <code className="flex-1 font-mono text-[10px] text-red-500 dark:text-red-400 truncate">yay -S win2xcur</code>
                                                         <button
                                                             onClick={() => copyToClipboard('yay -S win2xcur', 'install-arch')}
-                                                            className="p-1.5 rounded hover:bg-white dark:hover:bg-slate-800 text-black dark:text-white hover: text-black dark:text-white dark:hover:text-slate-300 transition-colors"
+                                                            className={`p-1.5 rounded hover:bg-white dark:hover:bg-slate-800 text-black dark:text-white transition-all ${copied === 'install-arch' ? 'animate-copy-pulse' : ''}`}
                                                         >
                                                             {copied === 'install-arch' ? <Check size={14} className="text-green-500" /> : <Copy size={14} />}
                                                         </button>
@@ -646,7 +684,7 @@ ln -sf ${mappings.pin} location-arrow`;
                                                         <code className="flex-1 font-mono text-[10px] text-blue-500 dark:text-blue-400 truncate">pip install win2xcur</code>
                                                         <button
                                                             onClick={() => copyToClipboard('pip install win2xcur', 'install-pip')}
-                                                            className="p-1.5 rounded hover:bg-white dark:hover:bg-slate-800 text-black dark:text-white hover: text-black dark:text-white dark:hover:text-slate-300 transition-colors"
+                                                            className={`p-1.5 rounded hover:bg-white dark:hover:bg-slate-800 text-black dark:text-white transition-all ${copied === 'install-pip' ? 'animate-copy-pulse' : ''}`}
                                                         >
                                                             {copied === 'install-pip' ? <Check size={14} className="text-green-500" /> : <Copy size={14} />}
                                                         </button>
@@ -671,7 +709,7 @@ ln -sf ${mappings.pin} location-arrow`;
                                                 </code>
                                                 <button
                                                     onClick={() => copyToClipboard(`mkdir -p ~/.local/share/icons/${themeName}/cursors\nwin2xcur "${sourcePath}"/*.ani -o ~/.local/share/icons/${themeName}/cursors/`, 'convert-cmd')}
-                                                    className="p-1.5 rounded hover:bg-white dark:hover:bg-slate-800 text-black dark:text-white hover: text-black dark:text-white dark:hover:text-slate-300 transition-colors"
+                                                    className={`p-1.5 rounded hover:bg-white dark:hover:bg-slate-800 text-black dark:text-white transition-all ${copied === 'convert-cmd' ? 'animate-copy-pulse' : ''}`}
                                                 >
                                                     {copied === 'convert-cmd' ? <Check size={14} className="text-green-500" /> : <Copy size={14} />}
                                                 </button>
@@ -695,7 +733,7 @@ ln -sf ${mappings.pin} location-arrow`;
                                                         <span className="text-teto dark:text-miku font-bold mr-2">$</span>{`cat <<EOF > ~/.local/share/icons/${themeName}/index.theme\n[Icon Theme]\nName=${themeName}\nInherits=Adwaita\nEOF`}
                                                     </code>
                                                 </div>
-                                                <div className="border-t md:border-t-0 md:border-l border-slate-100 dark:border-slate-800 w-full md:w-16 flex items-center justify-center bg-slate-50 dark:bg-slate-900/50 hover:bg-teto-50 dark:hover:bg-miku-900/20 transition-colors cursor-pointer" onClick={() => copyToClipboard(`cat <<EOF > ~/.local/share/icons/${themeName}/index.theme\n[Icon Theme]\nName=${themeName}\nInherits=Adwaita\nEOF`, `pipe-2`)}>
+                                                <div className={`border-t md:border-t-0 md:border-l border-slate-100 dark:border-slate-800 w-full md:w-16 flex items-center justify-center bg-slate-50 dark:bg-slate-900/50 hover:bg-teto-50 dark:hover:bg-miku-900/20 transition-all cursor-pointer ${copied === 'pipe-2' ? 'animate-copy-pulse bg-green-50 dark:bg-green-900/10' : ''}`} onClick={() => copyToClipboard(`cat <<EOF > ~/.local/share/icons/${themeName}/index.theme\n[Icon Theme]\nName=${themeName}\nInherits=Adwaita\nEOF`, `pipe-2`)}>
                                                     {copied === `pipe-2` ? <Check size={20} className="text-green-500" /> : <Copy size={20} className=" text-black dark:text-white" />}
                                                 </div>
                                             </div>
@@ -724,7 +762,7 @@ ln -sf ${mappings.pin} location-arrow`;
                                                 </button>
                                                 <button
                                                     onClick={() => copyToClipboard(scriptContent, 'full-script')}
-                                                    className="flex items-center gap-2 px-4 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-black dark:text-white dark:text-slate-200 rounded-lg text-[10px] font-bold transition-all border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 uppercase tracking-wider"
+                                                    className={`flex items-center gap-2 px-4 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-black dark:text-white rounded-lg text-[10px] font-bold transition-all border border-slate-200 dark:border-slate-700 uppercase tracking-wider ${copied === 'full-script' ? 'animate-copy-pulse border-green-500' : ''}`}
                                                 >
                                                     {copied === 'full-script' ? <Check size={12} className="text-green-500" /> : <Copy size={12} />}
                                                     {copied === 'full-script' ? 'Copied' : 'Copy'}
@@ -784,7 +822,7 @@ ln -sf ${mappings.pin} location-arrow`;
                                                             </code>
                                                             <button
                                                                 onClick={() => copyToClipboard(item.cmd, `cmd-${idx}`)}
-                                                                className="p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-black dark:text-white hover: text-black dark:text-white dark:hover:text-slate-300 transition-colors"
+                                                                className={`p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-black dark:text-white transition-all ${copied === `cmd-${idx}` ? 'animate-copy-pulse' : ''}`}
                                                                 title="Copy Command"
                                                             >
                                                                 {copied === `cmd-${idx}` ? <Check size={14} className="text-green-500" /> : <Copy size={14} />}
@@ -854,21 +892,54 @@ ln -sf ${mappings.pin} location-arrow`;
                                         Interactive Demo Area
                                     </h2>
 
-                                    <div className="relative flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                                        <p className="text-xs text-black dark:text-white max-w-md">
-                                            Hover over the blocks below to preview how each cursor action behaves.
-                                            Select a custom pack below to test it live.
+                                    <div className="relative flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-6 p-1">
+                                        <p className="text-xs text-black dark:text-white max-w-md leading-relaxed opacity-80">
+                                            Hover over the blocks below to preview behavior. 
+                                            Select a custom pack to test it live with our <span className="text-teto dark:text-miku font-bold">Custom JS Tracker</span>.
                                         </p>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-[10px] font-bold text-black dark:text-white uppercase tracking-wide">Test Pack:</span>
-                                            <select
-                                                value={demoPack}
-                                                onChange={(e) => setDemoPack(e.target.value)}
-                                                className="bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-700 text-black dark:text-white dark:text-slate-200 text-xs rounded-lg focus:ring-2 focus:ring-teto dark:focus:ring-miku outline-none p-2 font-bold cursor-pointer"
-                                            >
-                                                <option value="none">Browser Default</option>
-                                                <option value="Aemeath">Aemeath BLZ Free</option>
-                                            </select>
+                                        <div className="flex flex-col gap-2 min-w-[240px] relative">
+                                            <span className="text-[9px] font-black text-black dark:text-white uppercase tracking-[0.3em] opacity-50 ml-1">Test Pack</span>
+                                            <div className="relative">
+                                                <button
+                                                    onClick={() => setIsPackDropdownOpen(!isPackDropdownOpen)}
+                                                    className="w-full flex items-center justify-between px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all hover:border-teto dark:hover:border-miku shadow-sm group"
+                                                >
+                                                    <div className="flex items-center gap-3">
+                                                        <div className={`w-2 h-2 rounded-full ${demoPack === 'none' ? 'bg-slate-300 dark:bg-slate-700' : 'bg-teto dark:bg-miku animate-pulse shadow-[0_0_8px_rgba(57,197,187,0.5)]'}`}></div>
+                                                        <span className="text-slate-700 dark:text-slate-200">{demoPack === 'none' ? 'Browser Default' : (demoPack === 'Aemeath' ? 'Aemeath BLZ Free' : demoPack)}</span>
+                                                    </div>
+                                                    <ChevronDown size={14} className={`text-slate-400 group-hover:text-teto dark:group-hover:text-miku transition-transform duration-300 ${isPackDropdownOpen ? 'rotate-180' : ''}`} />
+                                                </button>
+
+                                                {isPackDropdownOpen && (
+                                                    <>
+                                                        <div className="fixed inset-0 z-[90]" onClick={() => setIsPackDropdownOpen(false)}></div>
+                                                        <div className="absolute top-full left-0 right-0 mt-2 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl z-[100] animate-fade-in backdrop-blur-xl">
+                                                            {[
+                                                                { id: 'none', label: 'Browser Default', desc: 'Native OS Cursors' },
+                                                                { id: 'Aemeath', label: 'Aemeath BLZ Free', desc: 'By BLZ on Ko-fi' }
+                                                            ].map(pack => (
+                                                                <button
+                                                                    key={pack.id}
+                                                                    onClick={() => {
+                                                                        setDemoPack(pack.id);
+                                                                        setIsPackDropdownOpen(false);
+                                                                    }}
+                                                                    className={`w-full text-left px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors flex items-center justify-between group/item`}
+                                                                >
+                                                                    <div>
+                                                                        <div className={`text-[10px] font-bold uppercase tracking-wider ${demoPack === pack.id ? 'text-teto dark:text-miku' : 'text-slate-700 dark:text-slate-300'}`}>
+                                                                            {pack.label}
+                                                                        </div>
+                                                                        <div className="text-[8px] text-slate-400 font-medium">{pack.desc}</div>
+                                                                    </div>
+                                                                    {demoPack === pack.id && <Check size={14} className="text-teto dark:text-miku" />}
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
 
@@ -1076,7 +1147,8 @@ ln -sf ${mappings.pin} location-arrow`;
                         </footer>
                     </div>
                 </div>
-            );
+            </div>
+        );
         };
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
