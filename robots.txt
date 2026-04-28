@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://eagle10021.github.io/Custom-Cursors-Linux/sitemap.xml
+Sitemap: https://cursorport.01blue.org/sitemap.xml
