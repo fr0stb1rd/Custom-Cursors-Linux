@@ -7,3 +7,6 @@ node_modules/
 *.swp
 install_cursors.sh
 Cursor Demos/
+# Custom scripts for conversion
+ani_to_gif.py
+extract_ani.py
