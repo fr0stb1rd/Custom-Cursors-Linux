@@ -7,5 +7,4 @@ node_modules/
 *.swp
 install_cursors.sh
 Cursor Demos/
-ani_to_gif.py
-extract_ani.py
+cursor_tools.py
