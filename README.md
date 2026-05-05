@@ -17,7 +17,7 @@ If you've ever tried moving your favorite Windows cursors over to Linux, you kno
 1. **[Open CursorPort](https://cursorport.01blue.org/)** — No installation needed, it runs right in your browser.
 2. **Grab your files**: Get the `.ani` or `.cur` files you want to use.
 3. **Convert**: Follow the steps in the tool to run `win2xcur`. It'll give you the exact command to copy-paste.
-4. **Organize**: Put your new cursors in `~/.local/share/icons/`.
+4. **Organize**: Put your new cursors in `~/.local/share/icons/` using the command.
 5. **Run the script**: Download and run the generated shell script to finish the setup.
 
 ## Prerequisites
