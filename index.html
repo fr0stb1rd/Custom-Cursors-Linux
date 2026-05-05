@@ -141,6 +141,15 @@
         const App = () => {
             const [copied, setCopied] = useState(null);
 
+            // Fixed mapping for Demo Packs to ensure they work regardless of user settings
+            const demoMapping = {
+                normal: 'Normal', working: 'Working', busy: 'Busy', link: 'Link', text: 'Text', 
+                precision: 'Precision', hand: 'Handwriting', unavailable: 'Unavailable', 
+                not_allowed: 'Unavailable', help: 'Help', move: 'Move', vertical: 'Vertical', 
+                horizontal: 'Horizontal', diag1: 'Diagonal1', diag2: 'Diagonal2', 
+                pin: 'Pin', all_scroll: 'Move', alternate: 'Alternate', person: 'Person'
+            };
+
             // --- THEME STATE MANAGEMENT ---
             // Initializes theme from localStorage to persist user preference.
             // Defaults to 'true' (Dark/Miku mode) if no preference is found.
@@ -915,7 +924,7 @@ ln -sf ${mappings.pin} location-arrow`;
                                                 >
                                                     <div className="flex items-center gap-3">
                                                         <div className={`w-2 h-2 rounded-full ${demoPack === 'none' ? 'bg-slate-300 dark:bg-slate-700' : 'bg-teto dark:bg-miku animate-pulse shadow-[0_0_8px_rgba(57,197,187,0.5)]'}`}></div>
-                                                        <span className="text-slate-700 dark:text-slate-200">{demoPack === 'none' ? 'Browser Default' : (demoPack === 'Aemeath' ? 'Aemeath BLZ Free' : demoPack)}</span>
+                                                        <span className="text-slate-700 dark:text-slate-200">{demoPack === 'none' ? 'Browser Default' : (demoPack === 'Aemeath' ? 'Aemeath BLZ Free' : (demoPack === 'Frieren' ? 'Frieren BLZ' : demoPack))}</span>
                                                     </div>
                                                     <ChevronDown size={14} className={`text-slate-400 group-hover:text-teto dark:group-hover:text-miku transition-transform duration-300 ${isPackDropdownOpen ? 'rotate-180' : ''}`} />
                                                 </button>
@@ -926,7 +935,8 @@ ln -sf ${mappings.pin} location-arrow`;
                                                         <div className="absolute top-full left-0 right-0 mt-2 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl z-[100] animate-fade-in backdrop-blur-xl">
                                                             {[
                                                                 { id: 'none', label: 'Browser Default', desc: 'Native OS Cursors' },
-                                                                { id: 'Aemeath', label: 'Aemeath BLZ Free', desc: 'By BLZ on Ko-fi' }
+                                                                { id: 'Aemeath', label: 'Aemeath BLZ Free', desc: 'By BLZ on Ko-fi' },
+                                                                { id: 'Frieren', label: 'Frieren BLZ', desc: 'Premium Pack by BLZ on Ko-fi' }
                                                             ].map(pack => (
                                                                 <button
                                                                     key={pack.id}
@@ -964,9 +974,11 @@ ln -sf ${mappings.pin} location-arrow`;
                                                     <p className="mb-2">
                                                         Please note that the quality of cursors here may appear lower due to browser rendering and scaling limitations, and this is <strong>NOT</strong> a fault of the artist-provided cursors. The original <code>.ani</code> files and converted files retain their original high quality when used natively in Linux/Windows!
                                                     </p>
-                                                    <p className="font-bold text-red-800 dark:text-red-200">
-                                                        Also, please note that not all cursors are available for some demo options due to missing files in the free demo pack.
-                                                    </p>
+                                                    {demoPack !== 'Frieren' && (
+                                                        <p className="font-bold text-red-800 dark:text-red-200">
+                                                            Also, please note that not all cursors are available for some demo options due to missing files in the free demo pack.
+                                                        </p>
+                                                    )}
                                                 </div>
                                             </div>
                                             {demoPack === 'Aemeath' && (
@@ -983,6 +995,33 @@ ln -sf ${mappings.pin} location-arrow`;
                                                             <a href="https://ko-fi.com/s/514a1a4b11" target="_blank" rel="noopener noreferrer" className="text-[10px] font-bold text-blue-600 dark:text-blue-400 hover:underline">
                                                                 Please check them out and support them!
                                                             </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {demoPack === 'Frieren' && (
+                                                <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border-2 border-purple-200 dark:border-purple-800/50 rounded-xl p-4 flex items-center justify-between shadow-sm animate-fade-in">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-purple-300 dark:border-purple-700 shrink-0 shadow-sm">
+                                                            <img src="./images/BLZ pfp.png" alt="BLZ" className="w-full h-full object-cover" />
+                                                        </div>
+                                                        <div>
+                                                            <div className="text-[10px] font-black text-purple-500 dark:text-purple-400 uppercase tracking-widest mb-0.5">Special Feature</div>
+                                                            <a href="https://ko-fi.com/s/774f762696" target="_blank" rel="noopener noreferrer" className="text-lg sm:text-xl font-black text-purple-800 dark:text-purple-200 hover:text-purple-600 dark:hover:text-white hover:underline transition-colors block leading-none mb-1.5">
+                                                                Frieren Pack by BLZ
+                                                            </a>
+                                                            <div className="flex items-center gap-2">
+                                                                <a href="https://ko-fi.com/s/774f762696" target="_blank" rel="noopener noreferrer" className="text-[10px] font-bold text-purple-600 dark:text-purple-400 hover:underline">
+                                                                    Support the artist and get the pack here!
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="hidden sm:block text-right">
+                                                        <div className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mb-1">Permission Status</div>
+                                                        <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 text-[8px] font-black text-green-600 dark:text-green-400">
+                                                            <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                                                            AUTHORIZED DEMO
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1007,7 +1046,9 @@ ln -sf ${mappings.pin} location-arrow`;
                                             { label: 'Diag 2', action: 'nesw-resize', mapKey: 'diag2', icon: <Maximize size={16} />, style: 'cursor-nesw-resize' },
                                             { label: 'All Scroll', action: 'all-scroll', mapKey: 'all_scroll', icon: <Maximize size={16} />, style: 'cursor-all-scroll' },
                                             { label: 'Handwriting', action: 'cell', mapKey: 'hand', icon: <FileCode size={16} />, style: 'cursor-cell' },
-                                            { label: 'Pin', action: 'alias', mapKey: 'pin', icon: <Check size={16} />, style: 'cursor-alias' }
+                                            { label: 'Pin', action: 'alias', mapKey: 'pin', icon: <Check size={16} />, style: 'cursor-alias' },
+                                            { label: 'Alternate Select', action: 'default', mapKey: 'alternate', icon: <MousePointer size={16} />, style: 'cursor-default' },
+                                            { label: 'Person Select', action: 'default', mapKey: 'person', icon: <MousePointer size={16} />, style: 'cursor-default' }
                                         ].map((item, idx) => (
                                             <div
                                                 key={idx}
@@ -1015,8 +1056,7 @@ ln -sf ${mappings.pin} location-arrow`;
                                                 title={`Test ${item.label} cursor`}
                                                 onMouseEnter={() => {
                                                     if (demoPack !== 'none') {
-                                                        // Change this extension to .gif or .webp
-                                                        setActiveCursor(`./demo-cursors/${demoPack}/${mappings[item.mapKey] || item.action}.gif`);
+                                                        setActiveCursor(`./demo-cursors/${demoPack}/${demoMapping[item.mapKey] || item.action}.gif`);
                                                     }
                                                 }}
                                                 onMouseLeave={() => setActiveCursor(null)}
