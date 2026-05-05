@@ -536,19 +536,32 @@ ln -sf ${mappings.pin} location-arrow`;
                                             />
                                         </div>
                                         <div>
-                                            <div className="flex justify-between items-end mb-3">
+                                            <div className="flex justify-between items-center mb-3">
                                                 <label className="block text-[11px] font-bold text-black dark:text-white uppercase tracking-wide">Cursor Size</label>
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 flex items-center justify-center bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden relative group/preview">
+                                                    <div className="w-[100px] h-[100px] flex items-center justify-center bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden relative group/preview transition-all duration-300">
                                                         <div className="absolute inset-0 bg-gradient-to-br from-teto/5 to-transparent dark:from-miku/5 opacity-0 group-hover/preview:opacity-100 transition-opacity"></div>
-                                                        <MousePointer 
-                                                            size={Math.max(12, cursorSize / 2)} 
-                                                            className="text-teto dark:text-miku transition-all duration-300" 
-                                                            style={{ 
-                                                                width: `${Math.max(12, cursorSize/2.5)}px`, 
-                                                                height: `${Math.max(12, cursorSize/2.5)}px` 
-                                                            }} 
-                                                        />
+                                                        {demoPack !== 'none' ? (
+                                                            <img 
+                                                                src={`./demo-cursors/${demoPack}/${demoMapping.normal}.gif`}
+                                                                alt="Preview"
+                                                                className="transition-all duration-300 drop-shadow-xl"
+                                                                style={{ 
+                                                                    width: `${cursorSize}px`, 
+                                                                    height: `${cursorSize}px`,
+                                                                    imageRendering: 'pixelated'
+                                                                }} 
+                                                            />
+                                                        ) : (
+                                                            <MousePointer 
+                                                                size={cursorSize} 
+                                                                className="text-teto dark:text-miku transition-all duration-300 drop-shadow-xl" 
+                                                                style={{ 
+                                                                    width: `${cursorSize}px`, 
+                                                                    height: `${cursorSize}px` 
+                                                                }} 
+                                                            />
+                                                        )}
                                                     </div>
                                                     <span className="text-xs font-mono font-bold text-teto dark:text-miku bg-teto-50 dark:bg-miku-900/30 px-2 py-0.5 rounded shadow-sm">{cursorSize}px</span>
                                                 </div>
