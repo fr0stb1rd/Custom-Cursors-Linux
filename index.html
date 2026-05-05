@@ -698,7 +698,7 @@ ln -sf ${mappings.pin} location-arrow`;
                                                     <div>
                                                         <div className="text-[9px] font-bold text-black dark:text-white uppercase tracking-wider mb-1">Arch Linux (AUR)</div>
                                                         <div className="flex items-center bg-slate-50 dark:bg-slate-950/50 rounded-lg border border-slate-100 dark:border-slate-800 p-2 group/cmd hover:border-teto dark:hover:border-miku transition-colors">
-                                                            <code className="flex-1 font-mono text-[10px] text-red-500 dark:text-red-400 overflow-x-auto whitespace-nowrap custom-scrollbar">yay -S win2xcur</code>
+                                                            <code className="flex-1 font-mono text-[10px] text-red-500 dark:text-red-400 overflow-x-auto whitespace-nowrap custom-scrollbar py-3 px-2">yay -S win2xcur</code>
                                                             <button
                                                                 onClick={() => copyToClipboard('yay -S win2xcur', 'install-arch')}
                                                                 className={`p-1.5 rounded hover:bg-white dark:hover:bg-slate-800 text-black dark:text-white transition-all ${copied === 'install-arch' ? 'animate-copy-pulse' : ''}`}
@@ -712,7 +712,7 @@ ln -sf ${mappings.pin} location-arrow`;
                                                     <div>
                                                         <div className="text-[9px] font-bold text-black dark:text-white uppercase tracking-wider mb-1">Universal (Python/Pip)</div>
                                                         <div className="flex items-center bg-slate-50 dark:bg-slate-950/50 rounded-lg border border-slate-100 dark:border-slate-800 p-2 group/cmd hover:border-teto dark:hover:border-miku transition-colors">
-                                                            <code className="flex-1 font-mono text-[10px] text-blue-500 dark:text-blue-400 overflow-x-auto whitespace-nowrap custom-scrollbar">pip install win2xcur</code>
+                                                            <code className="flex-1 font-mono text-[10px] text-blue-500 dark:text-blue-400 overflow-x-auto whitespace-nowrap custom-scrollbar py-3 px-2">pip install win2xcur</code>
                                                             <button
                                                                 onClick={() => copyToClipboard('pip install win2xcur', 'install-pip')}
                                                                 className={`p-1.5 rounded hover:bg-white dark:hover:bg-slate-800 text-black dark:text-white transition-all ${copied === 'install-pip' ? 'animate-copy-pulse' : ''}`}
@@ -735,7 +735,7 @@ ln -sf ${mappings.pin} location-arrow`;
                                                 </div>
 
                                                 <div className="flex items-center bg-slate-50 dark:bg-slate-950/50 rounded-lg border border-slate-100 dark:border-slate-800 p-2 group/cmd hover:border-teto dark:hover:border-miku transition-colors">
-                                                    <code className="flex-1 font-mono text-[10px] text-teto-600 dark:text-miku overflow-x-auto whitespace-nowrap custom-scrollbar mr-2 py-1">
+                                                    <code className="flex-1 font-mono text-[10px] text-teto-600 dark:text-miku overflow-x-auto whitespace-nowrap custom-scrollbar mr-2 py-3 px-2 leading-relaxed">
                                                         {`mkdir -p ~/.local/share/icons/${themeName}/cursors\nwin2xcur "${sourcePath}"/*.{ani,cur} -o ~/.local/share/icons/${themeName}/cursors/`}
                                                     </code>
                                                     <button
