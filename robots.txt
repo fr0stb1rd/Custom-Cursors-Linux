@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /cursors/
+Disallow: /demo-cursors/
+
 
 Sitemap: https://cursorport.01blue.org/sitemap.xml
