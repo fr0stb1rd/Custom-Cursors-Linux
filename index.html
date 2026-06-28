@@ -661,7 +661,14 @@
             useEffect(() => {
                 const sudo = needsSudo ? 'sudo ' : '';
                 const lnCmd = useSymlinks ? 'ln -sf' : 'cp -f';
-                const cleanupBlock = !useSymlinks ? `\n# Clean up original converted source files (only standard Linux names remain)\n${sudo}rm -f "${filePrefix}"*"${fileSuffix}"\n` : '';
+                const cleanupBlock = !useSymlinks ? `
+# Clean up original converted source files safely without wildcards
+for file in "$normal_file" "$working_file" "$busy_file" "$link_file" "$text_file" "$precision_file" "$hand_file" "$unavailable_file" "$not_allowed_file" "$help_file" "$move_file" "$all_scroll_file" "$vertical_file" "$horizontal_file" "$diag1_file" "$diag2_file" "$pin_file" "$alternate_file" "$person_file"; do
+    if [ -f "$file" ]; then
+        ${sudo}rm -f "$file"
+    fi
+done
+` : '';
                 // Helper to wrap a mapping value with optional prefix/suffix
                 const f = (val) => `${filePrefix}${val}${fileSuffix}`;
                 const generated = `#!/bin/bash
