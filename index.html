@@ -246,6 +246,8 @@
             const [autoSync, setAutoSync] = useStickyState(true, 'cp_autoSync');
             const [demoPack, setDemoPack] = useStickyState('none', 'cp_demoPack');
             const [installPath, setInstallPath] = useStickyState('$HOME/.local/share/icons', 'cp_installPath');
+            const [filePrefix, setFilePrefix] = useStickyState('', 'cp_filePrefix');
+            const [fileSuffix, setFileSuffix] = useStickyState('', 'cp_fileSuffix');
 
             // Computed: does the install path require sudo?
             const needsSudo = installPath.startsWith('/usr') || installPath.startsWith('/etc') || installPath.startsWith('/opt') || installPath.startsWith('/root');
@@ -327,6 +329,8 @@
             // We could add a "lock" feature if requested later.
             useEffect(() => {
                 const sudo = needsSudo ? 'sudo ' : '';
+                // Helper to wrap a mapping value with optional prefix/suffix
+                const f = (val) => `${filePrefix}${val}${fileSuffix}`;
                 const generated = `#!/bin/bash
 # CursorPort — Generated Symlink Script
 # Theme: ${themeName}
@@ -343,103 +347,103 @@ cd "${installPath}/${themeName}/cursors"
 # Pattern: ln -sf "[YOUR_FILE]" "[LINUX_NAME]"
 
 # Normal / Default
-ln -sf "${mappings.normal}" left_ptr
-ln -sf "${mappings.normal}" default
-ln -sf "${mappings.normal}" arrow
-ln -sf "${mappings.normal}" top_left_arrow
+ln -sf "${f(mappings.normal)}" left_ptr
+ln -sf "${f(mappings.normal)}" default
+ln -sf "${f(mappings.normal)}" arrow
+ln -sf "${f(mappings.normal)}" top_left_arrow
 
 # Working / Busy
-ln -sf "${mappings.working}" progress
-ln -sf "${mappings.working}" left_ptr_watch
-ln -sf "${mappings.busy}" watch
-ln -sf "${mappings.busy}" wait
+ln -sf "${f(mappings.working)}" progress
+ln -sf "${f(mappings.working)}" left_ptr_watch
+ln -sf "${f(mappings.busy)}" watch
+ln -sf "${f(mappings.busy)}" wait
 
 # Link / Pointer
-ln -sf "${mappings.link}" pointer
-ln -sf "${mappings.link}" hand1
-ln -sf "${mappings.link}" hand2
-ln -sf "${mappings.link}" pointing_hand
+ln -sf "${f(mappings.link)}" pointer
+ln -sf "${f(mappings.link)}" hand1
+ln -sf "${f(mappings.link)}" hand2
+ln -sf "${f(mappings.link)}" pointing_hand
 
 # Text
-ln -sf "${mappings.text}" xterm
-ln -sf "${mappings.text}" text
-ln -sf "${mappings.text}" ibeam
+ln -sf "${f(mappings.text)}" xterm
+ln -sf "${f(mappings.text)}" text
+ln -sf "${f(mappings.text)}" ibeam
 
 # Precision
-ln -sf "${mappings.precision}" crosshair
-ln -sf "${mappings.precision}" cross
-ln -sf "${mappings.precision}" diamond_cross
+ln -sf "${f(mappings.precision)}" crosshair
+ln -sf "${f(mappings.precision)}" cross
+ln -sf "${f(mappings.precision)}" diamond_cross
 
 # Handwriting
-ln -sf "${mappings.hand}" pencil
+ln -sf "${f(mappings.hand)}" pencil
 
 # Unavailable
-ln -sf "${mappings.unavailable}" forbidden
-ln -sf "${mappings.unavailable}" crossed_circle
-ln -sf "${mappings.not_allowed}" not-allowed
-ln -sf "${mappings.not_allowed}" no-drop
+ln -sf "${f(mappings.unavailable)}" forbidden
+ln -sf "${f(mappings.unavailable)}" crossed_circle
+ln -sf "${f(mappings.not_allowed)}" not-allowed
+ln -sf "${f(mappings.not_allowed)}" no-drop
 
 # Help
-ln -sf "${mappings.help}" help
-ln -sf "${mappings.help}" question_arrow
-ln -sf "${mappings.help}" dnd-ask
+ln -sf "${f(mappings.help)}" help
+ln -sf "${f(mappings.help)}" question_arrow
+ln -sf "${f(mappings.help)}" dnd-ask
 
 # Move
-ln -sf "${mappings.move}" move
-ln -sf "${mappings.move}" fleur
-ln -sf "${mappings.move}" size_all
-ln -sf "${mappings.move}" grabbing
-ln -sf "${mappings.move}" dnd-move
+ln -sf "${f(mappings.move)}" move
+ln -sf "${f(mappings.move)}" fleur
+ln -sf "${f(mappings.move)}" size_all
+ln -sf "${f(mappings.move)}" grabbing
+ln -sf "${f(mappings.move)}" dnd-move
 
 # All Scroll
-ln -sf "${mappings.all_scroll}" all-scroll
+ln -sf "${f(mappings.all_scroll)}" all-scroll
 
 # Vertical Resize
-ln -sf "${mappings.vertical}" ns-resize
-ln -sf "${mappings.vertical}" n-resize
-ln -sf "${mappings.vertical}" s-resize
-ln -sf "${mappings.vertical}" sb_v_double_arrow
-ln -sf "${mappings.vertical}" row-resize
-ln -sf "${mappings.vertical}" top_side
-ln -sf "${mappings.vertical}" bottom_side
+ln -sf "${f(mappings.vertical)}" ns-resize
+ln -sf "${f(mappings.vertical)}" n-resize
+ln -sf "${f(mappings.vertical)}" s-resize
+ln -sf "${f(mappings.vertical)}" sb_v_double_arrow
+ln -sf "${f(mappings.vertical)}" row-resize
+ln -sf "${f(mappings.vertical)}" top_side
+ln -sf "${f(mappings.vertical)}" bottom_side
 
 # Horizontal Resize
-ln -sf "${mappings.horizontal}" ew-resize
-ln -sf "${mappings.horizontal}" e-resize
-ln -sf "${mappings.horizontal}" w-resize
-ln -sf "${mappings.horizontal}" sb_h_double_arrow
-ln -sf "${mappings.horizontal}" col-resize
-ln -sf "${mappings.horizontal}" left_side
-ln -sf "${mappings.horizontal}" right_side
+ln -sf "${f(mappings.horizontal)}" ew-resize
+ln -sf "${f(mappings.horizontal)}" e-resize
+ln -sf "${f(mappings.horizontal)}" w-resize
+ln -sf "${f(mappings.horizontal)}" sb_h_double_arrow
+ln -sf "${f(mappings.horizontal)}" col-resize
+ln -sf "${f(mappings.horizontal)}" left_side
+ln -sf "${f(mappings.horizontal)}" right_side
 
 # Diagonal Resize (NW-SE)
-ln -sf "${mappings.diag1}" nwse-resize
-ln -sf "${mappings.diag1}" nw-resize
-ln -sf "${mappings.diag1}" se-resize
-ln -sf "${mappings.diag1}" ul_angle
+ln -sf "${f(mappings.diag1)}" nwse-resize
+ln -sf "${f(mappings.diag1)}" nw-resize
+ln -sf "${f(mappings.diag1)}" se-resize
+ln -sf "${f(mappings.diag1)}" ul_angle
 
 # Diagonal Resize (NE-SW)
-ln -sf "${mappings.diag2}" nesw-resize
-ln -sf "${mappings.diag2}" ne-resize
-ln -sf "${mappings.diag2}" sw-resize
-ln -sf "${mappings.diag2}" ur_angle
+ln -sf "${f(mappings.diag2)}" nesw-resize
+ln -sf "${f(mappings.diag2)}" ne-resize
+ln -sf "${f(mappings.diag2)}" sw-resize
+ln -sf "${f(mappings.diag2)}" ur_angle
 
 # Pin
-ln -sf "${mappings.pin}" pin
-ln -sf "${mappings.pin}" location-arrow
-ln -sf "${mappings.pin}" alias
-ln -sf "${mappings.pin}" dnd-link
+ln -sf "${f(mappings.pin)}" pin
+ln -sf "${f(mappings.pin)}" location-arrow
+ln -sf "${f(mappings.pin)}" alias
+ln -sf "${f(mappings.pin)}" dnd-link
 
 # Alternate Select
-ln -sf "${mappings.alternate}" cell
-ln -sf "${mappings.alternate}" plus
+ln -sf "${f(mappings.alternate)}" cell
+ln -sf "${f(mappings.alternate)}" plus
 
 # Person Select
-ln -sf "${mappings.person}" person
+ln -sf "${f(mappings.person)}" person
 
 echo "✅ Symlinks created successfully for theme: ${themeName}"`;
                 setScriptContent(generated);
-            }, [themeName, mappings, installPath, needsSudo]);
+            }, [themeName, mappings, installPath, needsSudo, filePrefix, fileSuffix]);
 
             // Handler: Updates username and auto-adjusts the Source Path if it matches the pattern
             const handleUsernameChange = (e) => {
@@ -755,8 +759,45 @@ echo "✅ Symlinks created successfully for theme: ${themeName}"`;
                                             File Mapping
                                         </h2>
                                         <p className="text-[10px] text-black dark:text-white mb-4 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
-                                            Map your Windows cursor filenames (without .ani) to Linux cursor roles.
+                                            Map your Windows cursor filenames (without .ani/.cur) to Linux cursor roles.
                                         </p>
+
+                                        {/* PREFIX / SUFFIX */}
+                                        <div className="mb-4 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 space-y-3">
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-[9px] font-black uppercase tracking-widest text-black dark:text-white">Filename Wrapper</span>
+                                                {(filePrefix || fileSuffix) && (
+                                                    <span className="text-[8px] font-mono bg-teto/10 dark:bg-miku/10 text-teto dark:text-miku border border-teto/20 dark:border-miku/20 px-2 py-0.5 rounded-full">
+                                                        {filePrefix || '…'}<span className="opacity-40">value</span>{fileSuffix || '…'}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-2">
+                                                <div>
+                                                    <label className="block text-[8px] font-bold text-black dark:text-white uppercase mb-1">Prefix</label>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="[Pr-IR] "
+                                                        value={filePrefix}
+                                                        onChange={(e) => setFilePrefix(e.target.value)}
+                                                        className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-[10px] font-mono text-black dark:text-white focus:border-teto dark:focus:border-miku focus:ring-1 focus:ring-teto dark:focus:ring-miku outline-none transition-all"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-[8px] font-bold text-black dark:text-white uppercase mb-1">Suffix</label>
+                                                    <input
+                                                        type="text"
+                                                        placeholder=" v4"
+                                                        value={fileSuffix}
+                                                        onChange={(e) => setFileSuffix(e.target.value)}
+                                                        className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-[10px] font-mono text-black dark:text-white focus:border-teto dark:focus:border-miku focus:ring-1 focus:ring-teto dark:focus:ring-miku outline-none transition-all"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <p className="text-[8px] text-black/50 dark:text-white/40">
+                                                Script'te her dosya adı <span className="font-mono">Prefix + Değer + Suffix</span> olarak kullanılır.
+                                            </p>
+                                        </div>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                                             {Object.keys(mappings).map(key => (
                                                 <div key={key} className="group">
@@ -767,6 +808,11 @@ echo "✅ Symlinks created successfully for theme: ${themeName}"`;
                                                         onChange={(e) => setMappings({ ...mappings, [key]: e.target.value })}
                                                         className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-lg px-3 py-2 text-xs font-mono text-black dark:text-white dark:text-slate-200 focus:border-teto dark:focus:border-miku focus:ring-1 focus:ring-teto dark:focus:ring-miku outline-none transition-all"
                                                     />
+                                                    {(filePrefix || fileSuffix) && (
+                                                        <p className="mt-1 text-[8px] font-mono text-teto/60 dark:text-miku/60 truncate">
+                                                            → {filePrefix}{mappings[key]}{fileSuffix}
+                                                        </p>
+                                                    )}
                                                 </div>
                                             ))}
                                         </div>
