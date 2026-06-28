@@ -675,103 +675,143 @@ set -e  # Exit immediately on any error
 ${sudo}mkdir -p "${installPath}/${themeName}/cursors"
 cd "${installPath}/${themeName}/cursors"
 
+# Helper function to find the first existing file in current directory among alternatives
+find_file() {
+    local prefix="$1"
+    local suffix="$2"
+    shift 2
+    for name in "$@"; do
+        local file="${prefix}${name}${suffix}"
+        if [ -f "$file" ]; then
+            echo "$file"
+            return 0
+        fi
+    done
+    # Fallback to the first option if none found
+    echo "${prefix}$3${suffix}"
+}
+
+# Auto-detect actual converted filenames using common variations
+prefix="${filePrefix}"
+suffix="${fileSuffix}"
+
+normal_file=$(find_file "$prefix" "$suffix" "${mappings.normal}" "Normal" "default" "left_ptr")
+working_file=$(find_file "$prefix" "$suffix" "${mappings.working}" "Working" "work" "progress")
+busy_file=$(find_file "$prefix" "$suffix" "${mappings.busy}" "Busy" "wait" "watch")
+link_file=$(find_file "$prefix" "$suffix" "${mappings.link}" "Link" "pointer" "hand")
+text_file=$(find_file "$prefix" "$suffix" "${mappings.text}" "Text" "ibeam" "xterm")
+precision_file=$(find_file "$prefix" "$suffix" "${mappings.precision}" "Precision" "crosshair" "cross")
+hand_file=$(find_file "$prefix" "$suffix" "${mappings.hand}" "Handwriting" "Handwrite" "pencil" "pen")
+unavailable_file=$(find_file "$prefix" "$suffix" "${mappings.unavailable}" "Unavailable" "forbidden" "crossed_circle")
+not_allowed_file=$(find_file "$prefix" "$suffix" "${mappings.not_allowed}" "Unavailable" "not-allowed" "no-drop" "forbidden")
+help_file=$(find_file "$prefix" "$suffix" "${mappings.help}" "Help" "question" "dnd-ask")
+move_file=$(find_file "$prefix" "$suffix" "${mappings.move}" "Move" "fleur" "size_all")
+all_scroll_file=$(find_file "$prefix" "$suffix" "${mappings.all_scroll}" "Move" "all-scroll" "fleur" "size_all")
+vertical_file=$(find_file "$prefix" "$suffix" "${mappings.vertical}" "Vertical" "VertRes" "ns-resize")
+horizontal_file=$(find_file "$prefix" "$suffix" "${mappings.horizontal}" "Horizontal" "HoriRes" "ew-resize")
+diag1_file=$(find_file "$prefix" "$suffix" "${mappings.diag1}" "Diagonal1" "DiaRes1" "nwse-resize")
+diag2_file=$(find_file "$prefix" "$suffix" "${mappings.diag2}" "Diagonal2" "DiaRes2" "nesw-resize")
+pin_file=$(find_file "$prefix" "$suffix" "${mappings.pin}" "Pin" "Location" "pin")
+alternate_file=$(find_file "$prefix" "$suffix" "${mappings.alternate}" "Alternate" "cell" "plus")
+person_file=$(find_file "$prefix" "$suffix" "${mappings.person}" "Person" "people")
+
 # --- SYMLINK COMMANDS ---
 # Pattern: ${sudo}${lnCmd} "[YOUR_FILE]" "[LINUX_NAME]"
 
 # Normal / Default
-${sudo}${lnCmd} "${f(mappings.normal)}" left_ptr
-${sudo}${lnCmd} "${f(mappings.normal)}" default
-${sudo}${lnCmd} "${f(mappings.normal)}" arrow
-${sudo}${lnCmd} "${f(mappings.normal)}" top_left_arrow
+${sudo}${lnCmd} "$normal_file" left_ptr
+${sudo}${lnCmd} "$normal_file" default
+${sudo}${lnCmd} "$normal_file" arrow
+${sudo}${lnCmd} "$normal_file" top_left_arrow
 
 # Working / Busy
-${sudo}${lnCmd} "${f(mappings.working)}" progress
-${sudo}${lnCmd} "${f(mappings.working)}" left_ptr_watch
-${sudo}${lnCmd} "${f(mappings.busy)}" watch
-${sudo}${lnCmd} "${f(mappings.busy)}" wait
+${sudo}${lnCmd} "$working_file" progress
+${sudo}${lnCmd} "$working_file" left_ptr_watch
+${sudo}${lnCmd} "$busy_file" watch
+${sudo}${lnCmd} "$busy_file" wait
 
 # Link / Pointer
-${sudo}${lnCmd} "${f(mappings.link)}" pointer
-${sudo}${lnCmd} "${f(mappings.link)}" hand1
-${sudo}${lnCmd} "${f(mappings.link)}" hand2
-${sudo}${lnCmd} "${f(mappings.link)}" pointing_hand
+${sudo}${lnCmd} "$link_file" pointer
+${sudo}${lnCmd} "$link_file" hand1
+${sudo}${lnCmd} "$link_file" hand2
+${sudo}${lnCmd} "$link_file" pointing_hand
 
 # Text
-${sudo}${lnCmd} "${f(mappings.text)}" xterm
-${sudo}${lnCmd} "${f(mappings.text)}" text
-${sudo}${lnCmd} "${f(mappings.text)}" ibeam
+${sudo}${lnCmd} "$text_file" xterm
+${sudo}${lnCmd} "$text_file" text
+${sudo}${lnCmd} "$text_file" ibeam
 
 # Precision
-${sudo}${lnCmd} "${f(mappings.precision)}" crosshair
-${sudo}${lnCmd} "${f(mappings.precision)}" cross
-${sudo}${lnCmd} "${f(mappings.precision)}" diamond_cross
+${sudo}${lnCmd} "$precision_file" crosshair
+${sudo}${lnCmd} "$precision_file" cross
+${sudo}${lnCmd} "$precision_file" diamond_cross
 
 # Handwriting
-${sudo}${lnCmd} "${f(mappings.hand)}" pencil
+${sudo}${lnCmd} "$hand_file" pencil
 
 # Unavailable
-${sudo}${lnCmd} "${f(mappings.unavailable)}" forbidden
-${sudo}${lnCmd} "${f(mappings.unavailable)}" crossed_circle
-${sudo}${lnCmd} "${f(mappings.not_allowed)}" not-allowed
-${sudo}${lnCmd} "${f(mappings.not_allowed)}" no-drop
+${sudo}${lnCmd} "$unavailable_file" forbidden
+${sudo}${lnCmd} "$unavailable_file" crossed_circle
+${sudo}${lnCmd} "$not_allowed_file" not-allowed
+${sudo}${lnCmd} "$not_allowed_file" no-drop
 
 # Help
-${sudo}${lnCmd} "${f(mappings.help)}" help
-${sudo}${lnCmd} "${f(mappings.help)}" question_arrow
-${sudo}${lnCmd} "${f(mappings.help)}" dnd-ask
+${sudo}${lnCmd} "$help_file" help
+${sudo}${lnCmd} "$help_file" question_arrow
+${sudo}${lnCmd} "$help_file" dnd-ask
 
 # Move
-${sudo}${lnCmd} "${f(mappings.move)}" move
-${sudo}${lnCmd} "${f(mappings.move)}" fleur
-${sudo}${lnCmd} "${f(mappings.move)}" size_all
-${sudo}${lnCmd} "${f(mappings.move)}" grabbing
-${sudo}${lnCmd} "${f(mappings.move)}" dnd-move
+${sudo}${lnCmd} "$move_file" move
+${sudo}${lnCmd} "$move_file" fleur
+${sudo}${lnCmd} "$move_file" size_all
+${sudo}${lnCmd} "$move_file" grabbing
+${sudo}${lnCmd} "$move_file" dnd-move
 
 # All Scroll
-${sudo}${lnCmd} "${f(mappings.all_scroll)}" all-scroll
+${sudo}${lnCmd} "$all_scroll_file" all-scroll
 
 # Vertical Resize
-${sudo}${lnCmd} "${f(mappings.vertical)}" ns-resize
-${sudo}${lnCmd} "${f(mappings.vertical)}" n-resize
-${sudo}${lnCmd} "${f(mappings.vertical)}" s-resize
-${sudo}${lnCmd} "${f(mappings.vertical)}" sb_v_double_arrow
-${sudo}${lnCmd} "${f(mappings.vertical)}" row-resize
-${sudo}${lnCmd} "${f(mappings.vertical)}" top_side
-${sudo}${lnCmd} "${f(mappings.vertical)}" bottom_side
+${sudo}${lnCmd} "$vertical_file" ns-resize
+${sudo}${lnCmd} "$vertical_file" n-resize
+${sudo}${lnCmd} "$vertical_file" s-resize
+${sudo}${lnCmd} "$vertical_file" sb_v_double_arrow
+${sudo}${lnCmd} "$vertical_file" row-resize
+${sudo}${lnCmd} "$vertical_file" top_side
+${sudo}${lnCmd} "$vertical_file" bottom_side
 
 # Horizontal Resize
-${sudo}${lnCmd} "${f(mappings.horizontal)}" ew-resize
-${sudo}${lnCmd} "${f(mappings.horizontal)}" e-resize
-${sudo}${lnCmd} "${f(mappings.horizontal)}" w-resize
-${sudo}${lnCmd} "${f(mappings.horizontal)}" sb_h_double_arrow
-${sudo}${lnCmd} "${f(mappings.horizontal)}" col-resize
-${sudo}${lnCmd} "${f(mappings.horizontal)}" left_side
-${sudo}${lnCmd} "${f(mappings.horizontal)}" right_side
+${sudo}${lnCmd} "$horizontal_file" ew-resize
+${sudo}${lnCmd} "$horizontal_file" e-resize
+${sudo}${lnCmd} "$horizontal_file" w-resize
+${sudo}${lnCmd} "$horizontal_file" sb_h_double_arrow
+${sudo}${lnCmd} "$horizontal_file" col-resize
+${sudo}${lnCmd} "$horizontal_file" left_side
+${sudo}${lnCmd} "$horizontal_file" right_side
 
 # Diagonal Resize (NW-SE)
-${sudo}${lnCmd} "${f(mappings.diag1)}" nwse-resize
-${sudo}${lnCmd} "${f(mappings.diag1)}" nw-resize
-${sudo}${lnCmd} "${f(mappings.diag1)}" se-resize
-${sudo}${lnCmd} "${f(mappings.diag1)}" ul_angle
+${sudo}${lnCmd} "$diag1_file" nwse-resize
+${sudo}${lnCmd} "$diag1_file" nw-resize
+${sudo}${lnCmd} "$diag1_file" se-resize
+${sudo}${lnCmd} "$diag1_file" ul_angle
 
 # Diagonal Resize (NE-SW)
-${sudo}${lnCmd} "${f(mappings.diag2)}" nesw-resize
-${sudo}${lnCmd} "${f(mappings.diag2)}" ne-resize
-${sudo}${lnCmd} "${f(mappings.diag2)}" sw-resize
-${sudo}${lnCmd} "${f(mappings.diag2)}" ur_angle
+${sudo}${lnCmd} "$diag2_file" nesw-resize
+${sudo}${lnCmd} "$diag2_file" ne-resize
+${sudo}${lnCmd} "$diag2_file" sw-resize
+${sudo}${lnCmd} "$diag2_file" ur_angle
 
 # Pin
-${sudo}${lnCmd} "${f(mappings.pin)}" pin
-${sudo}${lnCmd} "${f(mappings.pin)}" location-arrow
-${sudo}${lnCmd} "${f(mappings.pin)}" alias
-${sudo}${lnCmd} "${f(mappings.pin)}" dnd-link
+${sudo}${lnCmd} "$pin_file" pin
+${sudo}${lnCmd} "$pin_file" location-arrow
+${sudo}${lnCmd} "$pin_file" alias
+${sudo}${lnCmd} "$pin_file" dnd-link
 
 # Alternate Select
-${sudo}${lnCmd} "${f(mappings.alternate)}" cell
-${sudo}${lnCmd} "${f(mappings.alternate)}" plus
+${sudo}${lnCmd} "$alternate_file" cell
+${sudo}${lnCmd} "$alternate_file" plus
 
 # Person Select
-${sudo}${lnCmd} "${f(mappings.person)}" person
+${sudo}${lnCmd} "$person_file" person
 
 echo "✅ Symlinks created successfully for theme: ${themeName}"`;
                 setScriptContent(generated);
