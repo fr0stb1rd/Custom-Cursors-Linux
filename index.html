@@ -176,6 +176,8 @@
         const translations = {
             en: {
                 langLabel: 'EN',
+                useSymlinks: 'Use Symlinks',
+                useSymlinksHint: 'Create symbolic links (recommended) instead of duplicating cursor files.',
                 copied: 'Copied to Clipboard',
                 copiedShort: 'Copied',
                 copyShort: 'Copy',
@@ -280,6 +282,8 @@
             },
             tr: {
                 langLabel: 'TR',
+                useSymlinks: 'Sembolik Link Kullan',
+                useSymlinksHint: 'Dosyaları kopyalayarak çoğaltmak yerine sembolik bağlantılar oluşturur (önerilen).',
                 copied: 'Panoya Kopyalandı',
                 copiedShort: 'Kopyalandı',
                 copyShort: 'Kopyala',
@@ -384,6 +388,8 @@
             },
             zh: {
                 langLabel: 'ZH',
+                useSymlinks: '使用符号链接',
+                useSymlinksHint: '创建符号链接（推荐）而不是复制重复的光标文件。',
                 copied: '已复制到剪贴板',
                 copiedShort: '已复制',
                 copyShort: '复制',
@@ -603,6 +609,7 @@
             // We keep the script in state so it can be edited manually.
             const [scriptContent, setScriptContent] = useState('');
             const [isPackDropdownOpen, setIsPackDropdownOpen] = useState(false);
+            const [useSymlinks, setUseSymlinks] = useStickyState(true, 'cp_useSymlinks');
 
             // Helper: Copies text to clipboard
             // Uses modern navigator.clipboard API with execCommand fallback for compatibility
@@ -653,6 +660,7 @@
             // We could add a "lock" feature if requested later.
             useEffect(() => {
                 const sudo = needsSudo ? 'sudo ' : '';
+                const lnCmd = useSymlinks ? 'ln -sf' : 'cp -f';
                 // Helper to wrap a mapping value with optional prefix/suffix
                 const f = (val) => `${filePrefix}${val}${fileSuffix}`;
                 const generated = `#!/bin/bash
@@ -668,106 +676,106 @@ ${sudo}mkdir -p "${installPath}/${themeName}/cursors"
 cd "${installPath}/${themeName}/cursors"
 
 # --- SYMLINK COMMANDS ---
-# Pattern: ${sudo}ln -sf "[YOUR_FILE]" "[LINUX_NAME]"
+# Pattern: ${sudo}${lnCmd} "[YOUR_FILE]" "[LINUX_NAME]"
 
 # Normal / Default
-${sudo}ln -sf "${f(mappings.normal)}" left_ptr
-${sudo}ln -sf "${f(mappings.normal)}" default
-${sudo}ln -sf "${f(mappings.normal)}" arrow
-${sudo}ln -sf "${f(mappings.normal)}" top_left_arrow
+${sudo}${lnCmd} "${f(mappings.normal)}" left_ptr
+${sudo}${lnCmd} "${f(mappings.normal)}" default
+${sudo}${lnCmd} "${f(mappings.normal)}" arrow
+${sudo}${lnCmd} "${f(mappings.normal)}" top_left_arrow
 
 # Working / Busy
-${sudo}ln -sf "${f(mappings.working)}" progress
-${sudo}ln -sf "${f(mappings.working)}" left_ptr_watch
-${sudo}ln -sf "${f(mappings.busy)}" watch
-${sudo}ln -sf "${f(mappings.busy)}" wait
+${sudo}${lnCmd} "${f(mappings.working)}" progress
+${sudo}${lnCmd} "${f(mappings.working)}" left_ptr_watch
+${sudo}${lnCmd} "${f(mappings.busy)}" watch
+${sudo}${lnCmd} "${f(mappings.busy)}" wait
 
 # Link / Pointer
-${sudo}ln -sf "${f(mappings.link)}" pointer
-${sudo}ln -sf "${f(mappings.link)}" hand1
-${sudo}ln -sf "${f(mappings.link)}" hand2
-${sudo}ln -sf "${f(mappings.link)}" pointing_hand
+${sudo}${lnCmd} "${f(mappings.link)}" pointer
+${sudo}${lnCmd} "${f(mappings.link)}" hand1
+${sudo}${lnCmd} "${f(mappings.link)}" hand2
+${sudo}${lnCmd} "${f(mappings.link)}" pointing_hand
 
 # Text
-${sudo}ln -sf "${f(mappings.text)}" xterm
-${sudo}ln -sf "${f(mappings.text)}" text
-${sudo}ln -sf "${f(mappings.text)}" ibeam
+${sudo}${lnCmd} "${f(mappings.text)}" xterm
+${sudo}${lnCmd} "${f(mappings.text)}" text
+${sudo}${lnCmd} "${f(mappings.text)}" ibeam
 
 # Precision
-${sudo}ln -sf "${f(mappings.precision)}" crosshair
-${sudo}ln -sf "${f(mappings.precision)}" cross
-${sudo}ln -sf "${f(mappings.precision)}" diamond_cross
+${sudo}${lnCmd} "${f(mappings.precision)}" crosshair
+${sudo}${lnCmd} "${f(mappings.precision)}" cross
+${sudo}${lnCmd} "${f(mappings.precision)}" diamond_cross
 
 # Handwriting
-${sudo}ln -sf "${f(mappings.hand)}" pencil
+${sudo}${lnCmd} "${f(mappings.hand)}" pencil
 
 # Unavailable
-${sudo}ln -sf "${f(mappings.unavailable)}" forbidden
-${sudo}ln -sf "${f(mappings.unavailable)}" crossed_circle
-${sudo}ln -sf "${f(mappings.not_allowed)}" not-allowed
-${sudo}ln -sf "${f(mappings.not_allowed)}" no-drop
+${sudo}${lnCmd} "${f(mappings.unavailable)}" forbidden
+${sudo}${lnCmd} "${f(mappings.unavailable)}" crossed_circle
+${sudo}${lnCmd} "${f(mappings.not_allowed)}" not-allowed
+${sudo}${lnCmd} "${f(mappings.not_allowed)}" no-drop
 
 # Help
-${sudo}ln -sf "${f(mappings.help)}" help
-${sudo}ln -sf "${f(mappings.help)}" question_arrow
-${sudo}ln -sf "${f(mappings.help)}" dnd-ask
+${sudo}${lnCmd} "${f(mappings.help)}" help
+${sudo}${lnCmd} "${f(mappings.help)}" question_arrow
+${sudo}${lnCmd} "${f(mappings.help)}" dnd-ask
 
 # Move
-${sudo}ln -sf "${f(mappings.move)}" move
-${sudo}ln -sf "${f(mappings.move)}" fleur
-${sudo}ln -sf "${f(mappings.move)}" size_all
-${sudo}ln -sf "${f(mappings.move)}" grabbing
-${sudo}ln -sf "${f(mappings.move)}" dnd-move
+${sudo}${lnCmd} "${f(mappings.move)}" move
+${sudo}${lnCmd} "${f(mappings.move)}" fleur
+${sudo}${lnCmd} "${f(mappings.move)}" size_all
+${sudo}${lnCmd} "${f(mappings.move)}" grabbing
+${sudo}${lnCmd} "${f(mappings.move)}" dnd-move
 
 # All Scroll
-${sudo}ln -sf "${f(mappings.all_scroll)}" all-scroll
+${sudo}${lnCmd} "${f(mappings.all_scroll)}" all-scroll
 
 # Vertical Resize
-${sudo}ln -sf "${f(mappings.vertical)}" ns-resize
-${sudo}ln -sf "${f(mappings.vertical)}" n-resize
-${sudo}ln -sf "${f(mappings.vertical)}" s-resize
-${sudo}ln -sf "${f(mappings.vertical)}" sb_v_double_arrow
-${sudo}ln -sf "${f(mappings.vertical)}" row-resize
-${sudo}ln -sf "${f(mappings.vertical)}" top_side
-${sudo}ln -sf "${f(mappings.vertical)}" bottom_side
+${sudo}${lnCmd} "${f(mappings.vertical)}" ns-resize
+${sudo}${lnCmd} "${f(mappings.vertical)}" n-resize
+${sudo}${lnCmd} "${f(mappings.vertical)}" s-resize
+${sudo}${lnCmd} "${f(mappings.vertical)}" sb_v_double_arrow
+${sudo}${lnCmd} "${f(mappings.vertical)}" row-resize
+${sudo}${lnCmd} "${f(mappings.vertical)}" top_side
+${sudo}${lnCmd} "${f(mappings.vertical)}" bottom_side
 
 # Horizontal Resize
-${sudo}ln -sf "${f(mappings.horizontal)}" ew-resize
-${sudo}ln -sf "${f(mappings.horizontal)}" e-resize
-${sudo}ln -sf "${f(mappings.horizontal)}" w-resize
-${sudo}ln -sf "${f(mappings.horizontal)}" sb_h_double_arrow
-${sudo}ln -sf "${f(mappings.horizontal)}" col-resize
-${sudo}ln -sf "${f(mappings.horizontal)}" left_side
-${sudo}ln -sf "${f(mappings.horizontal)}" right_side
+${sudo}${lnCmd} "${f(mappings.horizontal)}" ew-resize
+${sudo}${lnCmd} "${f(mappings.horizontal)}" e-resize
+${sudo}${lnCmd} "${f(mappings.horizontal)}" w-resize
+${sudo}${lnCmd} "${f(mappings.horizontal)}" sb_h_double_arrow
+${sudo}${lnCmd} "${f(mappings.horizontal)}" col-resize
+${sudo}${lnCmd} "${f(mappings.horizontal)}" left_side
+${sudo}${lnCmd} "${f(mappings.horizontal)}" right_side
 
 # Diagonal Resize (NW-SE)
-${sudo}ln -sf "${f(mappings.diag1)}" nwse-resize
-${sudo}ln -sf "${f(mappings.diag1)}" nw-resize
-${sudo}ln -sf "${f(mappings.diag1)}" se-resize
-${sudo}ln -sf "${f(mappings.diag1)}" ul_angle
+${sudo}${lnCmd} "${f(mappings.diag1)}" nwse-resize
+${sudo}${lnCmd} "${f(mappings.diag1)}" nw-resize
+${sudo}${lnCmd} "${f(mappings.diag1)}" se-resize
+${sudo}${lnCmd} "${f(mappings.diag1)}" ul_angle
 
 # Diagonal Resize (NE-SW)
-${sudo}ln -sf "${f(mappings.diag2)}" nesw-resize
-${sudo}ln -sf "${f(mappings.diag2)}" ne-resize
-${sudo}ln -sf "${f(mappings.diag2)}" sw-resize
-${sudo}ln -sf "${f(mappings.diag2)}" ur_angle
+${sudo}${lnCmd} "${f(mappings.diag2)}" nesw-resize
+${sudo}${lnCmd} "${f(mappings.diag2)}" ne-resize
+${sudo}${lnCmd} "${f(mappings.diag2)}" sw-resize
+${sudo}${lnCmd} "${f(mappings.diag2)}" ur_angle
 
 # Pin
-${sudo}ln -sf "${f(mappings.pin)}" pin
-${sudo}ln -sf "${f(mappings.pin)}" location-arrow
-${sudo}ln -sf "${f(mappings.pin)}" alias
-${sudo}ln -sf "${f(mappings.pin)}" dnd-link
+${sudo}${lnCmd} "${f(mappings.pin)}" pin
+${sudo}${lnCmd} "${f(mappings.pin)}" location-arrow
+${sudo}${lnCmd} "${f(mappings.pin)}" alias
+${sudo}${lnCmd} "${f(mappings.pin)}" dnd-link
 
 # Alternate Select
-${sudo}ln -sf "${f(mappings.alternate)}" cell
-${sudo}ln -sf "${f(mappings.alternate)}" plus
+${sudo}${lnCmd} "${f(mappings.alternate)}" cell
+${sudo}${lnCmd} "${f(mappings.alternate)}" plus
 
 # Person Select
-${sudo}ln -sf "${f(mappings.person)}" person
+${sudo}${lnCmd} "${f(mappings.person)}" person
 
 echo "✅ Symlinks created successfully for theme: ${themeName}"`;
                 setScriptContent(generated);
-            }, [themeName, mappings, installPath, needsSudo, filePrefix, fileSuffix]);
+            }, [themeName, mappings, installPath, needsSudo, filePrefix, fileSuffix, useSymlinks]);
 
             // Handler: Updates username and auto-adjusts the Source Path if it matches the pattern
             const handleUsernameChange = (e) => {
@@ -1037,6 +1045,25 @@ echo "✅ Symlinks created successfully for theme: ${themeName}"`;
                                                     onChange={(e) => setSourcePath(e.target.value)}
                                                     className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teto dark:focus:ring-miku transition-all text-[11px] font-mono text-black dark:text-white dark:text-slate-200"
                                                 />
+                                            </div>
+
+                                            {/* USE SYMLINKS OPTION */}
+                                            <div>
+                                                <div className="flex justify-between items-center mb-2">
+                                                    <label className="block text-[11px] font-bold text-black dark:text-white uppercase tracking-wide">
+                                                        {t('useSymlinks')}
+                                                    </label>
+                                                    <button
+                                                        onClick={() => setUseSymlinks(!useSymlinks)}
+                                                        className="flex items-center gap-2 group cursor-pointer focus:outline-none"
+                                                        title={t('useSymlinksHint')}
+                                                    >
+                                                        <div className={`w-8 h-4 rounded-full p-0.5 transition-colors duration-300 ${useSymlinks ? 'bg-teto dark:bg-miku' : 'bg-slate-200 dark:bg-slate-700'}`}>
+                                                            <div className={`w-3 h-3 rounded-full bg-white shadow-sm transition-transform duration-300 ${useSymlinks ? 'translate-x-4' : 'translate-x-0'}`}></div>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <p className="text-[9px] text-slate-500 dark:text-slate-400 leading-normal">{t('useSymlinksHint')}</p>
                                             </div>
 
                                             {/* INSTALL LOCATION */}
