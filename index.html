@@ -1037,7 +1037,39 @@ echo "✅ Cursor theme '${themeName}' installed successfully!"`;
                                 </div>
                             </header>
 
-                            <main className="max-w-7xl mx-auto px-6 pt-12 grid grid-cols-1 lg:grid-cols-12 gap-10 animate-fade-in">
+                            {/* PREREQUISITE BANNER: win2xcur */}
+                            <div className="max-w-7xl mx-auto px-6 pt-10 animate-fade-in">
+                                <div className="relative overflow-hidden bg-white dark:bg-slate-900 border border-sky-200 dark:border-sky-900/50 rounded-2xl px-6 py-4 shadow-sm flex flex-col sm:flex-row sm:items-center gap-4 transition-colors">
+                                    <div className="absolute inset-0 bg-gradient-to-r from-sky-50 dark:from-sky-950/30 to-transparent pointer-events-none"></div>
+                                    <div className="relative flex items-center gap-3 flex-1">
+                                        <div className="p-2 rounded-xl bg-sky-100 dark:bg-sky-900/50 text-sky-600 dark:text-sky-400 flex-shrink-0">
+                                            <Icon size={18}><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></Icon>
+                                        </div>
+                                        <div>
+                                            <p className="text-[11px] font-black text-sky-800 dark:text-sky-200 uppercase tracking-wider">{t('step1Title')}</p>
+                                            <p className="text-[10px] text-sky-600 dark:text-sky-400">{t('step1Desc')}</p>
+                                        </div>
+                                    </div>
+                                    <div className="relative flex flex-wrap items-center gap-2">
+                                        <div className="flex items-center bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800 pr-1 overflow-hidden">
+                                            <span className="text-[8px] font-black uppercase px-2 py-0.5 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 border-r border-slate-200 dark:border-slate-800 tracking-widest">AUR</span>
+                                            <code className="font-mono text-[10px] text-red-500 dark:text-red-400 px-3 py-2 whitespace-nowrap">yay -S win2xcur</code>
+                                            <button onClick={() => copyToClipboard('yay -S win2xcur', 'install-arch')} className={`p-1.5 rounded hover:bg-white dark:hover:bg-slate-800 text-black dark:text-white transition-all ${copied === 'install-arch' ? 'animate-copy-pulse' : ''}`}>
+                                                {copied === 'install-arch' ? <Check size={12} className="text-green-500" /> : <Copy size={12} />}
+                                            </button>
+                                        </div>
+                                        <div className="flex items-center bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800 pr-1 overflow-hidden">
+                                            <span className="text-[8px] font-black uppercase px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-r border-slate-200 dark:border-slate-800 tracking-widest">PIP</span>
+                                            <code className="font-mono text-[10px] text-blue-500 dark:text-blue-400 px-3 py-2 whitespace-nowrap">pip install win2xcur</code>
+                                            <button onClick={() => copyToClipboard('pip install win2xcur', 'install-pip')} className={`p-1.5 rounded hover:bg-white dark:hover:bg-slate-800 text-black dark:text-white transition-all ${copied === 'install-pip' ? 'animate-copy-pulse' : ''}`}>
+                                                {copied === 'install-pip' ? <Check size={12} className="text-green-500" /> : <Copy size={12} />}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <main className="max-w-7xl mx-auto px-6 pt-6 grid grid-cols-1 lg:grid-cols-12 gap-10 animate-fade-in">
 
                                 {/* LEFT COLUMN: CONFIG */}
                                 <div className="lg:col-span-4 space-y-8 animate-slide-up" style={{ animationDelay: '0.1s' }}>
@@ -1378,25 +1410,18 @@ done
 
 set -e
 
-# 1. Check if win2xcur is installed
-if ! command -v win2xcur &> /dev/null; then
-    echo "❌ Error: 'win2xcur' is not installed on your system." >&2
-    echo "Please install it first (e.g., 'pip install win2xcur' or via your package manager)." >&2
-    exit 1
-fi
-
-# 2. Ensure cursor directory exists
+# 1. Ensure cursor directory exists
 ${sudo}mkdir -p "${installPath}/${themeName}/cursors"
 
-# 3. Convert files
+# 2. Convert files
 echo "🌀 Converting Windows cursor files..."
 ${sudo}win2xcur "${sourcePath}"/*.{ani,cur} -o "${installPath}/${themeName}/cursors/"
 
-# 4. Register Theme
+# 3. Register Theme
 echo "📝 Registering icon theme..."
 printf '[Icon Theme]\nName=${themeName}\nInherits=Adwaita\n' | ${sudo}tee "${installPath}/${themeName}/index.theme" > /dev/null
 
-# 5. Create symlinks or copy files
+# 4. Create symlinks or copy files
 cd "${installPath}/${themeName}/cursors"
 
 find_file() {
@@ -1517,7 +1542,6 @@ echo "✅ Cursor theme '${themeName}' installed successfully!"
                                             {/* Pipeline Steps Flow */}
                                             <div className="flex items-center gap-1.5 mb-3 flex-wrap">
                                                 {[
-                                                    { icon: '✓', label: t('step1Title') || 'Install win2xcur', color: 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800' },
                                                     { icon: '✓', label: t('step2Title') || 'Convert Files', color: 'bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 border-violet-200 dark:border-violet-800' },
                                                     { icon: '✓', label: t('step3Title') || 'Register Theme', color: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800' },
                                                     { icon: '✓', label: useSymlinks ? 'Symlink' : 'Copy + Cleanup', color: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800' },
@@ -1566,47 +1590,6 @@ echo "✅ Cursor theme '${themeName}' installed successfully!"
                                             {t('pipelineDesc')}
                                         </p>
                                         <div className="space-y-4">
-                                            {/* STEP 1: INSTALLATION */}
-                                            <div className="relative overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 hover:border-teto dark:hover:border-miku transition-colors shadow-sm group">
-                                                <div className="flex items-center justify-between mb-3">
-                                                    <div>
-                                                        <h3 className="font-bold text-black dark:text-white dark:text-slate-200 text-sm">{t('step1Title')}</h3>
-                                                        <p className="text-[10px] text-black dark:text-white">{t('step1Desc')}</p>
-                                                    </div>
-                                                    <span className="text-[10px] font-mono font-bold text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">SETUP</span>
-                                                </div>
-
-                                                <div className="space-y-3">
-                                                    {/* Arch Option */}
-                                                    <div>
-                                                        <div className="text-[9px] font-bold text-black dark:text-white uppercase tracking-wider mb-1">Arch Linux (AUR)</div>
-                                                        <div className="flex items-center bg-slate-50 dark:bg-slate-950/50 rounded-lg border border-slate-100 dark:border-slate-800 p-2 group/cmd hover:border-teto dark:hover:border-miku transition-colors">
-                                                            <code className="flex-1 font-mono text-[10px] text-red-500 dark:text-red-400 overflow-x-auto whitespace-nowrap custom-scrollbar py-3 px-2">yay -S win2xcur</code>
-                                                            <button
-                                                                onClick={() => copyToClipboard('yay -S win2xcur', 'install-arch')}
-                                                                className={`p-1.5 rounded hover:bg-white dark:hover:bg-slate-800 text-black dark:text-white transition-all ${copied === 'install-arch' ? 'animate-copy-pulse' : ''}`}
-                                                            >
-                                                                {copied === 'install-arch' ? <Check size={14} className="text-green-500" /> : <Copy size={14} />}
-                                                            </button>
-                                                        </div>
-                                                    </div>
-
-                                                    {/* Universal Option */}
-                                                    <div>
-                                                        <div className="text-[9px] font-bold text-black dark:text-white uppercase tracking-wider mb-1">Universal (Python/Pip)</div>
-                                                        <div className="flex items-center bg-slate-50 dark:bg-slate-950/50 rounded-lg border border-slate-100 dark:border-slate-800 p-2 group/cmd hover:border-teto dark:hover:border-miku transition-colors">
-                                                            <code className="flex-1 font-mono text-[10px] text-blue-500 dark:text-blue-400 overflow-x-auto whitespace-nowrap custom-scrollbar py-3 px-2">pip install win2xcur</code>
-                                                            <button
-                                                                onClick={() => copyToClipboard('pip install win2xcur', 'install-pip')}
-                                                                className={`p-1.5 rounded hover:bg-white dark:hover:bg-slate-800 text-black dark:text-white transition-all ${copied === 'install-pip' ? 'animate-copy-pulse' : ''}`}
-                                                            >
-                                                                {copied === 'install-pip' ? <Check size={14} className="text-green-500" /> : <Copy size={14} />}
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
                                             {/* STEP 2: CONVERSION */}
                                             <div className="relative overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 hover:border-teto dark:hover:border-miku transition-colors shadow-sm group">
                                                 <div className="flex items-center justify-between mb-3">
