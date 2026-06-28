@@ -180,6 +180,7 @@
                 useSymlinksHint: 'Create symbolic links (recommended) instead of duplicating cursor files.',
                 copied: 'Copied to Clipboard',
                 copiedShort: 'Copied',
+                copyOneLiner: 'Copy One-Liner',
                 copyShort: 'Copy',
                 configTitle: 'Configuration',
                 infoHint: (u, t) => `Update ${u} to your username and ${t} to your theme name.`,
@@ -286,6 +287,7 @@
                 useSymlinksHint: 'Dosyaları kopyalayarak çoğaltmak yerine sembolik bağlantılar oluşturur (önerilen).',
                 copied: 'Panoya Kopyalandı',
                 copiedShort: 'Kopyalandı',
+                copyOneLiner: 'Tek Satır Kopyala',
                 copyShort: 'Kopyala',
                 configTitle: 'Yapılandırma',
                 infoHint: (u, t) => `${u} kısmını Linux kullanıcı adınızla, ${t} kısmını tema adınızla güncelleyin.`,
@@ -392,6 +394,7 @@
                 useSymlinksHint: '创建符号链接（推荐）而不是复制重复的光标文件。',
                 copied: '已复制到剪贴板',
                 copiedShort: '已复制',
+                copyOneLiner: '复制单行命令',
                 copyShort: '复制',
                 configTitle: '配置',
                 infoHint: (u, t) => `将 ${u} 更新为您的用户名，将 ${t} 更新为您的主题名称。`,
@@ -1455,6 +1458,17 @@ echo "✅ Cursor theme '${themeName}' installed successfully!"`;
                                                     >
                                                         <Icon size={12}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></Icon>
                                                         {t('download')} .sh
+                                                    </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            const base64 = btoa(unescape(encodeURIComponent(scriptContent)));
+                                                            const cmd = `echo "${base64}" | base64 -d > /tmp/inst_cursors.sh && bash /tmp/inst_cursors.sh && rm -f /tmp/inst_cursors.sh`;
+                                                            copyToClipboard(cmd, 'one-liner');
+                                                        }}
+                                                        className={`flex items-center gap-2 px-4 py-1.5 bg-teto-50 dark:bg-miku-900/20 hover:bg-teto-100 dark:hover:bg-miku-900/40 text-teto-700 dark:text-miku-300 rounded-lg text-[10px] font-bold transition-all border border-teto-200 dark:border-miku-800 uppercase tracking-wider ${copied === 'one-liner' ? 'animate-copy-pulse border-green-500' : ''}`}
+                                                    >
+                                                        {copied === 'one-liner' ? <Check size={12} className="text-green-500" /> : <Terminal size={12} />}
+                                                        {copied === 'one-liner' ? t('copiedShort') : t('copyOneLiner')}
                                                     </button>
                                                     <button
                                                         onClick={() => copyToClipboard(scriptContent, 'full-script')}
